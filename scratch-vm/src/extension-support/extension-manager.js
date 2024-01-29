@@ -50,6 +50,9 @@ const builtinExtensions = {
 
 var twJSON = require('../turbowarp-extensions/extensions-tw.json');
 twJSON.extensions.forEach((ext) => {
+	if (!ext.slug) {
+		return;
+	}
 	function _getConstructorFunction() {
 		var rawJS = require('!raw-loader!../turbowarp-extensions/'+ext.slug+'.js');
 		return gm2TurbowarpxtensionSupport.runExtensionSync(rawJS);

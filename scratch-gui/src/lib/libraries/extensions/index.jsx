@@ -110,11 +110,17 @@ for (var ext of TWExtensions.extensions) {
 			}
 			
 		}
+		var iconURL = "";
+		if (ext.image) {
+			iconURL = require("./tw-extensions/"+ext.image);
+		} else {
+			iconURL = require("./unknown.svg");
+		}
 		var extDescription = ext.description + " " + extraText + "" + extraText2;
 		twExtensionList.push({
 			name: ext.name,
 			extensionId: ext.id,
-			iconURL: require("./tw-extensions/"+ext.image),
+			iconURL: iconURL,
 			insetIconURL: twExtsIcon,
 			description: (
 				<div>
