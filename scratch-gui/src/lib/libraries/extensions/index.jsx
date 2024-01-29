@@ -79,6 +79,8 @@ import userdatabig from './userdata/big.png';
 import rokusmall from './roku/small.png';
 import rokubig from './roku/big.png';
 
+import returnIcon from './returnicon.svg';
+
 import sndanalyserBig from './sound_analyser/big.svg';
 
 import nessmall from './nes_emulator/nes-small.svg';
@@ -836,5 +838,27 @@ export default [
 		tags: [
 			"tw"
 		]
+    },
+	{
+        // not really an extension, but it's easiest to present it as one
+        name: (
+            <FormattedMessage
+                defaultMessage="Custom Reporters"
+                description="Name of custom reporters extension"
+                id="tw.customReporters.name"
+            />
+        ),
+        extensionId: 'procedures_enable_return',
+        iconURL: returnIcon,
+        description: (
+            <FormattedMessage
+                defaultMessage="Allow custom blocks to output values and be used as inputs."
+                description="Description of custom reporters extension"
+                id="tw.customReporters.description"
+            />
+        ),
+        tags: ['tw'],
+        incompatibleWithScratch: true,
+        featured: true
     }
 ].concat(twExtensionList);

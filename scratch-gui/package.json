@@ -5,7 +5,7 @@
   "main": "./dist/scratch-gui.js",
   "scripts": {
     "build": "npm run clean && webpack --colors --bail",
-	"build-no-clean": "webpack --colors --bail",
+    "build-no-clean": "webpack --colors --bail",
     "clean": "rimraf ./build && mkdirp build && rimraf ./dist && mkdirp dist",
     "deploy": "touch build/.nojekyll && gh-pages -t -d build -m \"[skip ci] Build for $(git log --pretty=format:%H -n1)\"",
     "prune": "./prune-gh-pages.sh",
@@ -28,7 +28,7 @@
     "url": "git+ssh://git@github.com/LLK/scratch-gui.git"
   },
   "dependencies": {
-    "@turbowarp/scratch-l10n": "^3.1000.20230326022803",
+    "@turbowarp/scratch-l10n": "*",
     "arraybuffer-loader": "^1.0.6",
     "autoprefixer": "^9.0.1",
     "base64-loader": "1.0.0",
@@ -47,6 +47,7 @@
     "intl-messageformat": "^2.2.0",
     "js-base64": "2.4.9",
     "keymirror": "0.1.1",
+    "loader-utils": "^3.2.1",
     "lodash.bindall": "4.4.0",
     "lodash.debounce": "4.0.8",
     "lodash.defaultsdeep": "4.6.1",

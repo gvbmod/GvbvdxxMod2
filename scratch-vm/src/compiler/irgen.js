@@ -227,6 +227,11 @@ class ScriptTreeGenerator {
             };
         }
 
+        case 'control_get_counter':
+            return {
+                kind: 'counter.get'
+            };
+
         case 'data_variable':
             return {
                 kind: 'var.get',
@@ -699,6 +704,10 @@ class ScriptTreeGenerator {
                 whenTrue: this.descendSubstack(block, 'SUBSTACK'),
                 whenFalse: []
             };
+        case 'control_clear_counter':
+            return {
+                kind: 'counter.clear'
+            };
         case 'control_create_clone_of':
             return {
                 kind: 'control.createClone',
@@ -740,6 +749,10 @@ class ScriptTreeGenerator {
                 condition: this.descendInputOfBlock(block, 'CONDITION'),
                 whenTrue: this.descendSubstack(block, 'SUBSTACK'),
                 whenFalse: this.descendSubstack(block, 'SUBSTACK2')
+            };
+        case 'control_incr_counter':
+            return {
+                kind: 'counter.increment'
             };
         case 'control_repeat':
             this.analyzeLoop();
@@ -1215,7 +1228,7 @@ class ScriptTreeGenerator {
         const variable = block.fields[fieldName];
         const id = variable.id;
 
-        if (this.variableCache.hasOwnProperty(id)) {
+        if (Object.prototype.hasOwnProperty.call(this.variableCache, id)) {
             return this.variableCache[id];
         }
 
@@ -1236,20 +1249,20 @@ class ScriptTreeGenerator {
         const stage = this.stage;
 
         // Look for by ID in target...
-        if (target.variables.hasOwnProperty(id)) {
+        if (Object.prototype.hasOwnProperty.call(target.variables, id)) {
             return createVariableData('target', target.variables[id]);
         }
 
         // Look for by ID in stage...
         if (!target.isStage) {
-            if (stage && stage.variables.hasOwnProperty(id)) {
+            if (stage && Object.prototype.hasOwnProperty.call(stage.variables, id)) {
                 return createVariableData('stage', stage.variables[id]);
             }
         }
 
         // Look for by name and type in target...
         for (const varId in target.variables) {
-            if (target.variables.hasOwnProperty(varId)) {
+            if (Object.prototype.hasOwnProperty.call(target.variables, varId)) {
                 const currVar = target.variables[varId];
                 if (currVar.name === name && currVar.type === type) {
                     return createVariableData('target', currVar);
@@ -1260,7 +1273,7 @@ class ScriptTreeGenerator {
         // Look for by name and type in stage...
         if (!target.isStage && stage) {
             for (const varId in stage.variables) {
-                if (stage.variables.hasOwnProperty(varId)) {
+                if (Object.prototype.hasOwnProperty.call(stage.variables, varId)) {
                     const currVar = stage.variables[varId];
                     if (currVar.name === name && currVar.type === type) {
                         return createVariableData('stage', currVar);
@@ -1278,7 +1291,7 @@ class ScriptTreeGenerator {
             // This is necessary because the script cache is shared between clones.
             // sprite.clones has all instances of this sprite including the original and all clones
             for (const clone of target.sprite.clones) {
-                if (!clone.variables.hasOwnProperty(id)) {
+                if (!Object.prototype.hasOwnProperty.call(clone.variables, id)) {
                     clone.variables[id] = new Variable(id, name, type, false);
                 }
             }
@@ -1401,12 +1414,14 @@ class ScriptTreeGenerator {
 
         const blockInfo = this.getBlockInfo(block.opcode);
         const blockType = (blockInfo && blockInfo.info && blockInfo.info.blockType) || BlockType.COMMAND;
-        const substacks = [];
+        const substacks = {};
         if (blockType === BlockType.CONDITIONAL || blockType === BlockType.LOOP) {
-            const branchCount = blockInfo.info.branchCount;
-            for (let i = 0; i < branchCount; i++) {
-                const inputName = i === 0 ? 'SUBSTACK' : `SUBSTACK${i + 1}`;
-                substacks.push(this.descendSubstack(block, inputName));
+            for (const inputName in block.inputs) {
+                if (!inputName.startsWith('SUBSTACK')) continue;
+                const branchNum = inputName === 'SUBSTACK' ? 1 : +inputName.substring('SUBSTACK'.length);
+                if (!isNaN(branchNum)) {
+                    substacks[branchNum] = this.descendSubstack(block, inputName);
+                }
             }
         }
 
@@ -1560,7 +1575,7 @@ class ScriptTreeGenerator {
             } else {
                 entryBlock = topBlockId;
             }
-    
+
             if (entryBlock) {
                 this.script.stack = this.walkStack(entryBlock);
             }
@@ -1585,7 +1600,7 @@ class IRGenerator {
 
     addProcedureDependencies (dependencies) {
         for (const procedureVariant of dependencies) {
-            if (this.procedures.hasOwnProperty(procedureVariant)) {
+            if (Object.prototype.hasOwnProperty.call(this.procedures, procedureVariant)) {
                 continue;
             }
             if (this.compilingProcedures.has(procedureVariant)) {

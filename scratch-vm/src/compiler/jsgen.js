@@ -445,6 +445,9 @@ class JSGenerator {
         case 'constant':
             return this.safeConstantInput(node.value);
 
+        case 'counter.get':
+            return new TypedInput('runtime.ext_scratch3_control._counter', TYPE_NUMBER);
+
         case 'keyboard.pressed':
             return new TypedInput(`runtime.ioDevices.keyboard.getKeyIsDown(${this.descendInput(node.key).asSafe()})`, TYPE_BOOLEAN);
 
@@ -770,9 +773,9 @@ class JSGenerator {
                 this.source += `const ${branchVariable} = createBranchInfo(${blockType === BlockType.LOOP});\n`;
                 this.source += `while (${branchVariable}.branch = +(${this.generateCompatibilityLayerCall(node, false, branchVariable)})) {\n`;
                 this.source += `switch (${branchVariable}.branch) {\n`;
-                for (let i = 0; i < node.substacks.length; i++) {
-                    this.source += `case ${i + 1}: {\n`;
-                    this.descendStack(node.substacks[i], new Frame(false));
+                for (const index in node.substacks) {
+                    this.source += `case ${+index}: {\n`;
+                    this.descendStack(node.substacks[index], new Frame(false));
                     this.source += `break;\n`;
                     this.source += `}\n`; // close case
                 }
@@ -873,6 +876,13 @@ class JSGenerator {
             this.source += `}\n`;
             break;
 
+        case 'counter.clear':
+            this.source += 'runtime.ext_scratch3_control._counter = 0;\n';
+            break;
+        case 'counter.increment':
+            this.source += 'runtime.ext_scratch3_control._counter++;\n';
+            break;
+
         case 'hat.edge':
             this.isInHat = true;
             this.source += '{\n';
@@ -967,7 +977,7 @@ class JSGenerator {
             this.source += 'target.clearEffects();\n';
             break;
         case 'looks.changeEffect':
-            if (this.target.effects.hasOwnProperty(node.effect)) {
+            if (Object.prototype.hasOwnProperty.call(this.target.effects, node.effect)) {
                 this.source += `target.setEffect("${sanitize(node.effect)}", runtime.ext_scratch3_looks.clampEffect("${sanitize(node.effect)}", ${this.descendInput(node.value).asNumber()} + target.effects["${sanitize(node.effect)}"]));\n`;
             }
             break;
@@ -1000,7 +1010,7 @@ class JSGenerator {
             this.source += 'target.setCostume(target.currentCostume + 1);\n';
             break;
         case 'looks.setEffect':
-            if (this.target.effects.hasOwnProperty(node.effect)) {
+            if (Object.prototype.hasOwnProperty.call(this.target.effects, node.effect)) {
                 this.source += `target.setEffect("${sanitize(node.effect)}", runtime.ext_scratch3_looks.clampEffect("${sanitize(node.effect)}", ${this.descendInput(node.value).asNumber()}));\n`;
             }
             break;
@@ -1200,7 +1210,7 @@ class JSGenerator {
     }
 
     descendVariable (variable) {
-        if (this.variableInputs.hasOwnProperty(variable.id)) {
+        if (Object.prototype.hasOwnProperty.call(this.variableInputs, variable.id)) {
             return this.variableInputs[variable.id];
         }
         const input = new VariableInput(`${this.referenceVariable(variable)}.value`);
@@ -1223,7 +1233,7 @@ class JSGenerator {
     }
 
     evaluateOnce (source) {
-        if (this._setupVariables.hasOwnProperty(source)) {
+        if (Object.prototype.hasOwnProperty.call(this._setupVariables, source)) {
             return this._setupVariables[source];
         }
         const variable = this._setupVariablesPool.next();
