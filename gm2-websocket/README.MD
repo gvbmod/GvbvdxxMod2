@@ -1,3 +1,7 @@
+# WORK IN PROGRESS
+
+This does not work yet or do anything, it's just here if I need it.
+
 # Gvbvdxx Mod 2 - Websockets Extension Server
 
 This is a fully remade version of the original websockets server for Gvbvdxx Mod 1.0 and 2.0
