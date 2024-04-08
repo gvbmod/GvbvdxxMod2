@@ -1,0 +1,17 @@
+{
+    "background_color": "#333333",
+    "description": "Modifcation of TurboWarp and Scratch 3.0, it adds more extensions and makes it very experimental.",
+    "display": "standalone",
+    "icons": [
+		{
+            "sizes": "256x256",
+            "src": "favicon.png",
+            "type": "image/png"
+        }
+    ],
+    "name": "Gvbvdxx Mod 2",
+    "short_name": "GvbMod2",
+    "start_url": "editor",
+    "theme_color": "#ff794d",
+	"version": 2.0
+}

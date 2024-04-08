@@ -1,0 +1,11 @@
+[
+	{
+		"id":"julmikblockstb",
+		"file":"Julmik",
+		"gui":{
+			"image": "images/julmik.svg",
+			"name":	"Jul-mik blocks",
+			"discription": "Adds some TurboBuilder blocks, and wait blocks!"
+		}
+	}
+]

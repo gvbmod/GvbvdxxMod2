@@ -1,0 +1,15 @@
+{
+  "name": "gm2-websocket",
+  "version": "1.0.0",
+  "description": "A simple API websocket server used for Gvbvdxx Mod 2.0 and 1.0's WebSocket extension.",
+  "main": "index.js",
+  "author": "Gvbvdxx",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  }
+}
